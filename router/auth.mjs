@@ -2,6 +2,7 @@ import express from "express";
 import * as authController from "../controller/auto.mjs";
 import { body } from "express-validator";
 import { validate } from "../middleware/validator.mjs";
+import { isAuth } from "../middleware/auth.mjs";
 
 const router = express.Router();
 
@@ -34,5 +35,6 @@ router.post("/signup", validateSignup, authController.signup);
 router.post("/login", validateLogin, authController.login);
 
 // 로그인 유지 확인
+router.post("/me", isAuth, authController.me);
 
 export default router;

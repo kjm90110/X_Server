@@ -1,0 +1,10 @@
+Authorization
+- http 인증 정보를 담기 위한 규칙
+    Authorization: Basic DIOJSFSOIJFEKSLNF==
+
+
+Bearer
+- JWT 기반의 인증 규칙
+- 이 토큰을 가지고 있는 사람은 인증된 사용자로 간주한다는 의미
+
+    Authorization: Bearer DIOJSFSOIJFEKSLNF==
