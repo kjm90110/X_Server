@@ -66,6 +66,11 @@ export async function registUser(userid, password, name, email) {
   return newUser;
 }
 
+export async function findByUserId(userid) {
+  const user = users.find((user) => user.userid == userid);
+  return user;
+}
+
 export async function updateUser(id, password, name, email, url) {
   const user = getUser(id);
   if (user) {

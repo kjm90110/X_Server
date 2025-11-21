@@ -1,17 +1,45 @@
+import express from "express";
 import * as authRepository from "../data/auth.mjs";
+import * as bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
+const secretKey = "abcdef1234!@#$";
+const bcryptSaltRounds = 10;
+const jwtExpiresInDays = "2d";
+
+async function createJwtToken(id) {
+  return jwt.sign({ id }, secretKey, { expiresIn: jwtExpiresInDays });
+}
 
 export async function signup(req, res, next) {
   const { userid, password, name, email } = req.body;
-  const user = await authRepository.registUser(userid, password, name, email);
-  return res.status(201).json(user);
+
+  // 회원 중복 체크
+  const found = await authRepository.findByUserId(userid);
+  if (found) {
+    return res.status(409).json({ message: `${userid}이 이미 있습니다` });
+  }
+
+  const hashed = bcrypt.hashSync(password, bcryptSaltRounds);
+  const user = await authRepository.registUser(userid, hashed, name, email);
+  // const user = await authRepository.registUser(userid, password, name, email);
+  const token = await createJwtToken(user.id);
+  console.log(token);
+  res.status(201).json({ token, user });
 }
 
 export async function login(req, res, next) {
   const { userid, password } = req.body;
-  const loginUser = await authRepository.login(userid, password);
-  if (loginUser) {
-    res.status(200).json({ message: `${loginUser[0].name}님, 안녕하세요!` });
-  } else {
-    res.status(404).json({ message: "로그인 실패." });
+  const loginUser = await authRepository.findByUserId(userid);
+  if (!loginUser) {
+    res.status(401).json(`${loginUser}를 찾을 수 없음`);
   }
+
+  const isValidPassword = await bcrypt.compare(password, loginUser.password);
+  if (!isValidPassword) {
+    return res.status(401).json({ message: "아이디 또는 비밀번호 확인" });
+  }
+
+  const token = await createJwtToken(loginUser.id);
+  res.status(200).json({ token, loginUser });
 }
