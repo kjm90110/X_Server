@@ -8,3 +8,33 @@ Bearer
 - 이 토큰을 가지고 있는 사람은 인증된 사용자로 간주한다는 의미
 
     Authorization: Bearer DIOJSFSOIJFEKSLNF==
+
+
+
+브랜치(branch)
+같은 프로젝트 안에서 서로 다른 개발 라인을 만들고 
+각자 개발 후, 다시 합칠 수 있는 기능
+
+branch 만드는 이유
+1. 많은 테스트를 해도 main이 망기질 염려가 없음
+2. 기능별/DB별 작업 내용을 분리
+3. 여러 명이 동시에 다른 기능을 개발할 때 충돌을 줄임
+4. 각자 개발 완료 후 main에 병합 할 수 있음(작업 망한 브랜치는 그냥 버리면 됨)
+
+브랜치 목록 보기
+git branch
+
+새로운 브랜치 생성(과 동시에 그 브랜치로 이동) 명령어
+git switch -c mysql-support (or git checkout -b mysql-support)
+
+이동만 하고 싶다
+git switch 브랜치이름
+
+기능별/브랜치명
+git switch -c feature/mysql-support (branch 앞에 기능을 붙여서 사용하는 관습이 있기도 하다. ex.disign 등)
+
+삭제
+git branch -d mysql-support
+
+mysql module 설치
+npm i mysql2
