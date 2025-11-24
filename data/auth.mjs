@@ -71,6 +71,10 @@ export async function findByUserId(userid) {
   return user;
 }
 
+export async function findById(id) {
+  return users.find((user) => user.id == id);
+}
+
 export async function updateUser(id, password, name, email, url) {
   const user = getUser(id);
   if (user) {

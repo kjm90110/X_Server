@@ -1,5 +1,5 @@
 import express from "express";
-import * as authController from "../controller/auto.mjs";
+import * as authController from "../controller/auth.mjs";
 import { body } from "express-validator";
 import { validate } from "../middleware/validator.mjs";
 import { isAuth } from "../middleware/auth.mjs";
