@@ -1,91 +1,68 @@
-let users = [
-  {
-    id: "1",
-    userid: "apple",
-    password: "1111",
-    name: "김사과",
-    email: "apple@apple.com",
-    url: "https://randomuser.me/api/portraits/women/32.jpg",
-  },
-  {
-    id: "2",
-    userid: "banana",
-    password: "2222",
-    name: "반하나",
-    email: "banana@banana.com",
-    url: "https://randomuser.me/api/portraits/women/44.jpg",
-  },
-  {
-    id: "3",
-    userid: "orange",
-    password: "3333",
-    name: "오렌지",
-    email: "orange@orange.com",
-    url: "https://randomuser.me/api/portraits/men/11.jpg",
-  },
-  {
-    id: "4",
-    userid: "berry",
-    password: "4444",
-    name: "배애리",
-    email: "orange@orange.com",
-    url: "https://randomuser.me/api/portraits/women/52.jpg",
-  },
-  {
-    id: "5",
-    userid: "melon",
-    password: "5555",
-    name: "이메론",
-    email: "orange@orange.com",
-    url: "https://randomuser.me/api/portraits/men/29.jpg",
-  },
-];
+import { db } from "../db/database.mjs";
 
-export async function getUsers() {
-  return users;
-}
+// export async function getUsers() {
+//     return users;
+// }
 
-export async function login(userid, password) {
-  const user = users.filter(
-    (user) => user.userid == userid && user.password == password
-  );
-  return user;
-}
+// export async function login(userid, password) {
+//     const user = users.filter(
+//         (user) => user.userid == userid && user.password == password
+//     );
+//     return user;
+// }
 
-export async function registUser(userid, password, name, email) {
-  const newUser = {
-    id: Date.now().toString(),
-    userid,
-    password,
-    name,
-    email,
-    url: "https://randomuser.me/api/portraits/women/32.jpg",
-  };
+export async function registUser(newUser) {
+    const { userid, password, name, email, url } = newUser;
+    return db
+        .execute(
+            "insert into users (userid, password, name, email, url) values(?, ?, ?, ?, ?)",
+            [userid, password, name, email, url]
+        )
+        .then((result) => result[0].insertId);
+    // result는 [ResultSetHeader, FieldPacket[]] 형태의 배열
+    // result[0] = 실제 쿼리 결과 (ResultSetHeader 객체)
+    // result[1] = 필드 정보 (보통 사용 안 함)
 
-  users = [newUser, ...users];
-  return newUser;
+    /*
+        result[0]
+        {
+          fieldCount: 0,
+          affectedRows: 1,        // 영향받은 행 수
+          insertId: 15,           // AUTO_INCREMENT로 생성된 ID
+          info: '',
+          serverStatus: 2,
+          warningStatus: 0,
+          changedRows: 0          // UPDATE 시 실제 변경된 행 수
+        }
+    */
 }
 
 export async function findByUserId(userid) {
-  const user = users.find((user) => user.userid == userid);
-  return user;
+    return db
+        .execute("select idx, password from users where userid=?", [userid])
+        .then((result) => {
+            console.log("result[0][0]:", result[0][0]);
+            return result[0][0];
+        });
 }
 
-export async function findById(id) {
-  return users.find((user) => user.id == id);
+export async function findById(idx) {
+    return db
+        .execute("select idx, userid from users where idx=?", [idx])
+        .then((result) => result[0][0]);
 }
 
-export async function updateUser(id, password, name, email, url) {
-  const user = getUser(id);
-  if (user) {
-    user.password = password;
-    user.name = name;
-    user.email = email;
-    user.url = url;
-  }
-  return user;
-}
+// export async function updateUser(id, password, name, email, url) {
+//     const user = getUser(id);
+//     if (user) {
+//         user.password = password;
+//         user.name = name;
+//         user.email = email;
+//         user.url = url;
+//     }
+//     return user;
+// }
 
-export async function deleteUser(id) {
-  users = users.filter((user) => user.userid != id);
-}
+// export async function deleteUser(id) {
+//     users = users.filter((user) => user.userid != id);
+// }

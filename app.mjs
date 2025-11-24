@@ -2,7 +2,6 @@ import express from "express";
 import postsRouter from "./router/posts.mjs";
 import authRouter from "./router/auth.mjs";
 import { config } from "./config.mjs";
-import { db } from "./db/database.mjs";
 
 const app = express();
 
@@ -16,5 +15,13 @@ app.use((req, res, next) => {
     res.sendStatus(404); // no page
 });
 
-db.getConnection().then((connection) => console.log(connection));
+// db.getConnection().then((connection) => console.log(connection));
 app.listen(config.host.port);
+
+/*
+    // async-await 방식 (더 깔끔!)
+    const connection = await db.getConnection();
+    const [results] = await connection.query('SELECT * FROM users');
+    console.log(results);
+    connection.release();
+*/

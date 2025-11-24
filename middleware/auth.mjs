@@ -17,33 +17,30 @@ export const isAuth = async (req, res, next) => {
     // 인증 성공
     const token = authHeader.split(" ")[1];
     console.log("토큰 분리 성공:", token);
-    next(); // authController.me 호출
 
     jwt.verify(token, config.jwt.secretKey, async (error, decoded) => {
         if (error) {
-            console.log("토큰 에러!!");
+            console.log("토큰 에러!!", error.message);
             return res.status(401).json(AUTH_ERROR);
         }
         console.log(decoded);
-        const user = await authRepository.findById(decoded.id);
+        const user = await authRepository.findById(decoded.idx);
 
         if (!user) {
             console.log("아이디 없음");
             return res.status(401).json(AUTH_ERROR);
         }
-        console.log("user id:", user.id);
+        console.log("user.idx:", user.idx);
         console.log("user.userid:", user.userid);
-        req.userid = user.userid; // 실제 아이디가 들어감
+        req.idx = user.idx;
 
         /*
-      토큰 분리 성공: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE3NjM5NDM5MzI3MTUiLCJpYXQiOjE3NjM5NDM5MzQsImV4cCI6MTc2NDExNjczNH0.zMnLfPDVVOpeSw8H3TQ-V8HmHiHFOVKkJQ5VabEcxAY
-      { id: '1763943932715', iat: 1763943934, exp: 1764116734 }      
-      user id: 1763943932715
-      user.userid: cherry
-    */
+          토큰 분리 성공: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE3NjM5NDM5MzI3MTUiLCJpYXQiOjE3NjM5NDM5MzQsImV4cCI6MTc2NDExNjczNH0.zMnLfPDVVOpeSw8H3TQ-V8HmHiHFOVKkJQ5VabEcxAY
+          { id: '1763943932715', iat: 1763943934, exp: 1764116734 }      
+          user id: 1763943932715
+          user.userid: cherry
+      */
 
         next();
     });
 };
-
-// npm i dotenv
