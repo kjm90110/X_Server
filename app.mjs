@@ -1,6 +1,7 @@
 import express from "express";
 import postsRouter from "./router/posts.mjs";
 import authRouter from "./router/auth.mjs";
+import { config } from "./config.mjs";
 
 const app = express();
 
@@ -11,7 +12,7 @@ app.use("/post", postsRouter);
 app.use("/auth", authRouter);
 
 app.use((req, res, next) => {
-  res.sendStatus(404); // no page
+    res.sendStatus(404); // no page
 });
 
-app.listen(8080);
+app.listen(config.host.port);
