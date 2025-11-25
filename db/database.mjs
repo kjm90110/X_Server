@@ -5,6 +5,14 @@ let db;
 
 export async function connectDB() {
     return await MongoDB.MongoClient.connect(config.db.host).then((client) => {
-        db = client.db();
+        db = client.db("aidetect");
     });
+}
+
+export function getUsers() {
+    return db.collection("users"); // collection 생성 또는 선택
+}
+
+export function getPosts() {
+    return db.collection("posts");
 }

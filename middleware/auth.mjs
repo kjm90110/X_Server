@@ -17,11 +17,10 @@ export const isAuth = async (req, res, next) => {
     // 인증 성공
     const token = authHeader.split(" ")[1];
     console.log("토큰 분리 성공:", token);
-    next(); // authController.me 호출
 
     jwt.verify(token, config.jwt.secretKey, async (error, decoded) => {
         if (error) {
-            console.log("토큰 에러!!");
+            console.log(error);
             return res.status(401).json(AUTH_ERROR);
         }
         console.log(decoded);
@@ -33,7 +32,7 @@ export const isAuth = async (req, res, next) => {
         }
         console.log("user id:", user.id);
         console.log("user.userid:", user.userid);
-        req.userid = user.userid; // 실제 아이디가 들어감
+        req.id = user.id;
 
         /*
       토큰 분리 성공: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE3NjM5NDM5MzI3MTUiLCJpYXQiOjE3NjM5NDM5MzQsImV4cCI6MTc2NDExNjczNH0.zMnLfPDVVOpeSw8H3TQ-V8HmHiHFOVKkJQ5VabEcxAY

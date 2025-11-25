@@ -16,7 +16,9 @@ app.use((req, res, next) => {
     res.sendStatus(404); // no page
 });
 
-connectDB().then(() => {
-    app.listen(config.host.port);
-    console.log("db connected!");
-});
+connectDB()
+    .then(() => {
+        app.listen(config.host.port);
+        console.log("db connected!");
+    })
+    .catch(console.error());

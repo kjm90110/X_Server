@@ -1,91 +1,40 @@
-let users = [
-  {
-    id: "1",
-    userid: "apple",
-    password: "1111",
-    name: "김사과",
-    email: "apple@apple.com",
-    url: "https://randomuser.me/api/portraits/women/32.jpg",
-  },
-  {
-    id: "2",
-    userid: "banana",
-    password: "2222",
-    name: "반하나",
-    email: "banana@banana.com",
-    url: "https://randomuser.me/api/portraits/women/44.jpg",
-  },
-  {
-    id: "3",
-    userid: "orange",
-    password: "3333",
-    name: "오렌지",
-    email: "orange@orange.com",
-    url: "https://randomuser.me/api/portraits/men/11.jpg",
-  },
-  {
-    id: "4",
-    userid: "berry",
-    password: "4444",
-    name: "배애리",
-    email: "orange@orange.com",
-    url: "https://randomuser.me/api/portraits/women/52.jpg",
-  },
-  {
-    id: "5",
-    userid: "melon",
-    password: "5555",
-    name: "이메론",
-    email: "orange@orange.com",
-    url: "https://randomuser.me/api/portraits/men/29.jpg",
-  },
-];
+import MongoDB from "mongodb";
+import { getUsers } from "../db/database.mjs";
+const ObjectID = MongoDB.ObjectId;
 
-export async function getUsers() {
-  return users;
-}
-
-export async function login(userid, password) {
-  const user = users.filter(
-    (user) => user.userid == userid && user.password == password
-  );
-  return user;
-}
-
-export async function registUser(userid, password, name, email) {
-  const newUser = {
-    id: Date.now().toString(),
-    userid,
-    password,
-    name,
-    email,
-    url: "https://randomuser.me/api/portraits/women/32.jpg",
-  };
-
-  users = [newUser, ...users];
-  return newUser;
+export async function registUser(user) {
+    return getUsers()
+        .insertOne(user)
+        .then((result) => result.insertedId.toString());
 }
 
 export async function findByUserId(userid) {
-  const user = users.find((user) => user.userid == userid);
-  return user;
+    // next()의 결과를 mapOptionalUser의 인자로 자동 전달
+    return getUsers().find({ userid }).next().then(mapOptionalUser); // userid에 해당하는 row
 }
 
 export async function findById(id) {
-  return users.find((user) => user.id == id);
+    return getUsers()
+        .find({ _id: new ObjectID(id) }) // id를 ObjectID 객체형으로 만듦.
+        .next()
+        .then(mapOptionalUser);
+}
+
+function mapOptionalUser(user) {
+    return user ? { ...user, id: user._id.toString() } : user;
 }
 
 export async function updateUser(id, password, name, email, url) {
-  const user = getUser(id);
-  if (user) {
-    user.password = password;
-    user.name = name;
-    user.email = email;
-    user.url = url;
-  }
-  return user;
+    const user = getUser(id);
+    if (user) {
+        user.password = password;
+        user.name = name;
+        user.email = email;
+        user.url = url;
+    }
+    return user;
 }
 
 export async function deleteUser(id) {
-  users = users.filter((user) => user.userid != id);
+    users = users.filter((user) => user.userid != id);
 }
