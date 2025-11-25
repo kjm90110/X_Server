@@ -1,4 +1,3 @@
-import express from "express";
 import * as authRepository from "../data/auth.mjs";
 import * as bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
