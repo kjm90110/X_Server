@@ -8,3 +8,12 @@ Bearer
 - 이 토큰을 가지고 있는 사람은 인증된 사용자로 간주한다는 의미
 
     Authorization: Bearer DIOJSFSOIJFEKSLNF==
+
+    git switch main
+
+2. 로컬 main 최신화(동기화)
+git pull origin main
+
+3. git merge feature/mongoose
+
+4. git push origin main
